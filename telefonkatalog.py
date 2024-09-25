@@ -1,17 +1,24 @@
-import sqlite3  # Importerer biblioteket SQLite3
+import mysql.connector  # Importerer MySQL-connector
 
-conn = sqlite3.connect('telefonkatalog.db') # kobler til en SQLite database med funksjonen connect(). Hvis filen 'telefonkatalog.db' ikke finnes, lages den automatisk
+# Koble til MySQL-databasen
+conn = mysql.connector.connect(
+    host="10.2.4.41",
+    user="Jasan",
+    password="passord1234",
+    database="telefonkatalog"
+)
 
-cursor = conn.cursor()  # Lager et objekt som lar oss bruke SQL på databasen
+cursor = conn.cursor()
 
-# Opprett en tabell hvis den ikke allerede eksisterer. Den heter 'personer' og har kolonnene 'fornavn', 'etternavn' og 'telefonnummer'. Hvis tabellen finnes fra før skjer ingenting.
+# Opprett en tabell hvis den ikke allerede eksisterer
 cursor.execute('''CREATE TABLE IF NOT EXISTS personer (
-                fornavn TEXT,
-                etternavn TEXT,
-                telefonnummer TEXT
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fornavn VARCHAR(255),
+                etternavn VARCHAR(255),
+                telefonnummer VARCHAR(20)
             )''')
 
-conn.commit()  # Lagrer endringene til databasen. Denne må kalles etter alle endringer i databasen.
+conn.commit()  # Lagrer endringene til databasen
 
 def visAllePersoner():
     cursor.execute("SELECT * FROM personer")
@@ -23,9 +30,9 @@ def visAllePersoner():
     else:
         print("*****************************************"
               "*****************************************")
-        for personer in resultater:
-            print("* Fornavn: {:15s} Etternavn: {:15s} Telfonnummer:{:8s}"
-                  .format(personer[0], personer[1], personer[2]))
+        for person in resultater:
+            print("* Fornavn: {:15s} Etternavn: {:15s} Telefonnummer: {:8s}"
+                  .format(person[1], person[2], person[3]))
         print("*****************************************"
               "*****************************************")
         input("Trykk en tast for å gå tilbake til menyen")
@@ -33,14 +40,14 @@ def visAllePersoner():
 
 # Funksjon som legger til en ny person i databasen
 def legg_til_person_i_db(fornavn, etternavn, telefonnummer):
-    cursor.execute("INSERT INTO personer (fornavn, etternavn, telefonnummer) VALUES (?, ?, ?)",
+    cursor.execute("INSERT INTO personer (fornavn, etternavn, telefonnummer) VALUES (%s, %s, %s)",
               (fornavn, etternavn, telefonnummer))
     conn.commit()
 
 
 # Funksjon som sletter en person fra databasen basert på fornavn, etternavn og telefonnummer
 def slett_person_fra_db(fornavn, etternavn, telefonnummer):
-    cursor.execute("DELETE FROM personer WHERE fornavn=? AND etternavn=? AND telefonnummer=?",
+    cursor.execute("DELETE FROM personer WHERE fornavn=%s AND etternavn=%s AND telefonnummer=%s",
               (fornavn, etternavn, telefonnummer))
     conn.commit()
 
@@ -79,10 +86,9 @@ def registrerPerson():
     etternavn = input("Skriv inn etternavn: ")
     telefonnummer = input("Skriv inn telefonnummer: ")
 
-    legg_til_person_i_db(fornavn, etternavn, telefonnummer) # Legger til informasjonen fra input-feltene i databasen som en ny rad
+    legg_til_person_i_db(fornavn, etternavn, telefonnummer)  # Legger til informasjonen i databasen
 
-    print("{0} {1} er registrert med telefonnummer {2}"
-          .format(fornavn, etternavn, telefonnummer))
+    print("{0} {1} er registrert med telefonnummer {2}".format(fornavn, etternavn, telefonnummer))
     input("Trykk en tast for å gå tilbake til menyen")
     printMeny()
 
@@ -109,23 +115,18 @@ def sokPerson():
         sokPerson()
 
 
-# typeSok angir om man søker på fornavn, etternavn, eller telefonnumer
-def finnPerson(typeSok, sokeTekst): # Bonus: denne funksjonen kan skrives mye kortere. Se om du klarer å forbedre den.
-    if typeSok == "fornavn":
-        cursor.execute("SELECT * FROM personer WHERE fornavn=?", (sokeTekst,))
-    elif typeSok == "etternavn":
-        cursor.execute("SELECT * FROM personer WHERE etternavn=?", (sokeTekst,))
-    elif typeSok == "telefonnummer":
-        cursor.execute("SELECT * FROM personer WHERE telefonnummer=?", (sokeTekst,))
-
+def finnPerson(typeSok, sokeTekst):
+    # Sjekker om typeSok er en gyldig kolonne for å unngå SQL-injection
+    if typeSok not in ["fornavn", "etternavn", "telefonnummer"]:
+        print("Ugyldig søkekategori.")
+        return
+    
+    query = f"SELECT * FROM personer WHERE {typeSok} = %s"
+    cursor.execute(query, (sokeTekst,))
     resultater = cursor.fetchall()
 
     if not resultater:
         print("Finner ingen personer")
     else:
-        for personer in resultater:
-            print("{0} {1} har telefonnummer {2}"
-                  .format(personer[0], personer[1], personer[2]))
-
-
-printMeny()  # Starter programmet ved å skrive menyen første gang
+        for person in resultater:
+            print("{0} {1} har telefonnummer {2}".format(person[1], person[2], person[3]))
