@@ -4,7 +4,7 @@ import mysql.connector  # Importerer MySQL-connector
 conn = mysql.connector.connect(
     host="10.2.4.41",
     user="Jasan",
-    password="passord1234",
+    password="abcd1234",
     database="telefonkatalog"
 )
 
