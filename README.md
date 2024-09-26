@@ -2,8 +2,6 @@
 ### instalisjon av os på rasptory pien
 1. Følg denne toturialen for å bygge og instalere rasptory pien (https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
 
-1. Start med å instalere os på rasptory pien (den som heter rasbian)
-
 2. vent til at instalasjonen er ferdig og svar på spørsmålene som dukker på skjermen
 
 3. Når du er inne på en desktop kan du åpne terminalen oppe til venstre eller trykk ctrl-alt-T
@@ -82,4 +80,41 @@ i. FLUSH PRIVILEGES;
 
 8. Nå kommer vi til det gøye, å lage en database yay!
 
-9. hoher
+9. start med å lage en database i mariadb
+
+```
+1. CREATE DATABASE telefonkatalog
+```
+
+10. nå som du har en database kan du putte info i den men først må vi bruke denne databasen vi ønsker å informere
+```
+1. USE DATABASE telefonkatalog
+```
+11. Tilslutt kan vi legge ting i denne. Under her ser du en fungerende telefonkatalog som du kan lage. Det er også beskrivet hva koden gjør!.
+```
+CREATE TABLE IF NOT EXISTS personer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fornavn VARCHAR(255),
+    etternavn VARCHAR(255),
+    telefonnummer VARCHAR(20)
+);
+
+
+INSERT INTO personer (fornavn, etternavn, telefonnummer) 
+VALUES ('Ola', 'Nordmann', '12345678'),
+       ('Kari', 'Nordmann', '87654321');
+```
+#### Forklaring! 
+```
+CREATE TABEL IF NOT EXIT 
+(lager en tabel som heter personer vis den ikke eksisterer)
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+(Denne setningen oppretter en unik og automatisk økende ID for hver rad i en tabell.)
+
+Varchar
+betyr at bokstav, tall og symboler kan fungere i denne tabelen
+
+INSERT INTO personer
+(setter info innen for personers kategorien)
+```
