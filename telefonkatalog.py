@@ -179,6 +179,7 @@ def Slett():
 
 def folg():
     webbrowser.open("http://github.com/Jasan33/")
+    print("gi meg en follow! https://github.com/Jasan33")
     print("Trykk en tast for å gå tilbake til menyen")
     input()
     printMeny()

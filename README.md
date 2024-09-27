@@ -1,10 +1,7 @@
 # Full installasjonsveiledning til telefonkatalogen
-### instalisjon av os på rasptory pien
-[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
-
-
-
+### instalisjon på rasptory pien
 1. Følg denne youtube toturialen vis du ikke har en ferdig bygget raspberry pi (https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
+[![Watch the video](https://i.imgur.com/UpW8HHZ.png)](https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
 
 2. vent til at instalasjonen er ferdig og svar på spørsmålene som dukker på skjermen
 
