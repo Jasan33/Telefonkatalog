@@ -1,5 +1,5 @@
 import mysql.connector  # Importerer MySQL-connector
-import webbrowser
+import webbrowser # Importerer WebBrowser
 
 # Koble til MySQL-databasen
 conn = mysql.connector.connect(
@@ -31,8 +31,8 @@ def legg_til_person_i_db(fornavn, etternavn, telefonnummer):
 
 # Funksjon som sletter en person fra databasen basert på fornavn, etternavn og telefonnummer
 def slett_person_fra_db(fornavn, etternavn, telefonnummer):
-    cursor.execute("DELETE FROM personer WHERE fornavn=? AND etternavn=? AND telefonnummer=?",
-              (fornavn, etternavn, telefonnummer))
+    cursor.execute("DELETE FROM personer WHERE fornavn=%s AND etternavn=%s AND telefonnummer=%s",
+                   (fornavn, etternavn, telefonnummer))
     conn.commit()
 
 telefonkatalog = []  # listeformat ["fornavn", "etternavn", "telefonnummer"]
@@ -43,7 +43,7 @@ def printMeny():
     print("|  2. Søk opp person eller telefonnummer                 |")
     print("|  3. Vis alle personer                                  |")
     print("|  4. Slett en person                                    |")
-    print("|  5. følg meg 😘                                       |")
+    print("|  5. følg meg 😊😊                                      |")
     print("|  6. Avslutt                                            |")
     print("----------------------------------------------------------")
     menyvalg = input("skriv inn tall for å velge fra menyen: ")
@@ -58,7 +58,7 @@ def utfoerMenyvalg(valgtTall):
     elif valgtTall == "3":
         visAllePersoner()
     elif valgtTall == "4":
-        Slett()
+        slett()  # Merk at jeg har endret til liten "s"
     elif valgtTall == "5":
         folg()
     elif valgtTall == "6":
@@ -69,7 +69,6 @@ def utfoerMenyvalg(valgtTall):
     else:
         nyttforsoek = input("Ugyldig valg. Velg et tall mellom 1-4: ")
         utfoerMenyvalg(nyttforsoek)
-
 
 def registrerPerson():
     fornavn = input("skriv inn fornavn: ")
@@ -152,7 +151,28 @@ def finnPerson(typesok, sokeTekst):
         print(f"Finner ingen personer med {typesok}: {sokeTekst}")
     sokPerson()
 
-def Slett():
+def slettPerson(typesok, sokeTekst):
+    global telefonkatalog
+    funnet = False
+    ny_katalog = []
+    for personer in telefonkatalog:
+        if (typesok == "fornavn" and personer[0] == sokeTekst) or \
+           (typesok == "etternavn" and personer[1] == sokeTekst) or \
+           (typesok == "telefonnummer" and personer[2] == sokeTekst):
+            print(f"Person {personer[0]} {personer[1]} med telefonnummer {personer[2]} er slettet.")
+            slett_person_fra_db(personer[0], personer[1], personer[2])  # Slett fra databasen
+            funnet = True
+        else:
+            ny_katalog.append(personer)
+    
+    if not funnet:
+        print(f"Fant ingen personer med {typesok}: {sokeTekst}")
+    
+    telefonkatalog = ny_katalog
+    input("Trykk en tast for å gå tilbake til menyen")
+    printMeny()
+
+def slett():
     if not telefonkatalog:
         print("Det er ingen registrerte personer i katalogen")
     else:
@@ -175,7 +195,7 @@ def Slett():
             printMeny()
         else:
             print("Ugyldig valg. Velg et tall mellom 1-4.")
-            Slett()
+            slett()
 
 def folg():
     webbrowser.open("http://github.com/Jasan33/")
