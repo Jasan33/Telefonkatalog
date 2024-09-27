@@ -1,6 +1,10 @@
 # Full installasjonsveiledning til telefonkatalogen
 ### instalisjon av os på rasptory pien
-1. Følg denne toturialen for å bygge og instalere rasptory pien (https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
+[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
+
+
+
+1. Følg denne youtube toturialen vis du ikke har en ferdig bygget raspberry pi (https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
 
 2. vent til at instalasjonen er ferdig og svar på spørsmålene som dukker på skjermen
 
@@ -44,7 +48,7 @@
 2. sudo mysql_secure_installation
 ```
 
-2. nå som vi har MariaDB kan vi starte med å lage en MariaDB bruker og gir denne rettigheter
+2. nå som vi har MariaDB kan vi starte med å lage en MariaDB bruker og gi denne rettigheter
 
 3. For å lage en bruker i MariaDB må vi først innom root
 
@@ -67,7 +71,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'bruker'@’localhost’ IDENTIFIED BY 'passord';
 
 3. Oppdater rettigheter
 
-i. FLUSH PRIVILEGES;
+FLUSH PRIVILEGES;
 ```
 6. prøv å logge inn i MariaDB 
 
@@ -86,7 +90,7 @@ i. FLUSH PRIVILEGES;
 1. CREATE DATABASE telefonkatalog
 ```
 
-10. nå som du har en database kan du putte info i den men først må vi bruke denne databasen vi ønsker å informere
+10. nå som du har en database kan du putte info i den men, først må vi bruke denne databasen vi ønsker å informere
 ```
 1. USE DATABASE telefonkatalog
 ```
@@ -113,8 +117,8 @@ id INT AUTO_INCREMENT PRIMARY KEY,
 (Denne setningen oppretter en unik og automatisk økende ID for hver rad i en tabell.)
 
 Varchar
-betyr at bokstav, tall og symboler kan fungere i denne tabelen
+gir brukeren tilgang til å skrive bokstaver, tall og symboler i denne tabelen
 
 INSERT INTO personer
-(setter info innen for personers kategorien)
+(setter info inn i personer kategorien)
 ```
