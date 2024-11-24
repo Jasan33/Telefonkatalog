@@ -1,25 +1,20 @@
 import mysql.connector  # Importerer MySQL-connector
-import webbrowser # Importerer WebBrowser
+import os
+import webbrowser
+from dotenv import load_dotenv, dotenv_values
+
+
+load_dotenv()
 
 # Koble til MySQL-databasen
 conn = mysql.connector.connect(
-    host="10.2.4.41",
-    user="Jasan",
-    password="abcd1234",
-    database="telefonkatalog"
+    host=(os.getenv("HOST")),
+    user=(os.getenv("USER")),
+    password=(os.getenv("PASSWORD")),
+    database=(os.getenv("DATABASE"))
 )
 
 cursor = conn.cursor()
-
-# Opprett en tabell hvis den ikke allerede eksisterer
-cursor.execute('''CREATE TABLE IF NOT EXISTS personer (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                fornavn VARCHAR(255),
-                etternavn VARCHAR(255),
-                telefonnummer VARCHAR(20)
-            )''')
-
-conn.commit()  # Lagrer endringene til databasen
 
 
 # Funksjon som legger til en ny person i databasen
@@ -28,6 +23,12 @@ def legg_til_person_i_db(fornavn, etternavn, telefonnummer):
               (fornavn, etternavn, telefonnummer))
     conn.commit()
 
+def pass_til_person_i_db(brukernavn, dittpass):
+    cursor.execute(
+        "INSERT INTO passes (brukernavn, dittpass) VALUES (%s, TO_BASE64(AES_ENCRYPT(%s, 'key1234')))",
+        (brukernavn, dittpass),
+    )
+    conn.commit()
 
 # Funksjon som sletter en person fra databasen basert på fornavn, etternavn og telefonnummer
 def slett_person_fra_db(fornavn, etternavn, telefonnummer):
@@ -43,8 +44,9 @@ def printMeny():
     print("|  2. Søk opp person eller telefonnummer                 |")
     print("|  3. Vis alle personer                                  |")
     print("|  4. Slett en person                                    |")
-    print("|  5. følg meg 😊😊                                      |")
-    print("|  6. Avslutt                                            |")
+    print("|  5. Lag bruker og passord                              |")
+    print("|  6. følg meg 😊😊                                      |")
+    print("|  7. Avslutt                                            |")
     print("----------------------------------------------------------")
     menyvalg = input("skriv inn tall for å velge fra menyen: ")
     utfoerMenyvalg(menyvalg)
@@ -60,15 +62,31 @@ def utfoerMenyvalg(valgtTall):
     elif valgtTall == "4":
         slett()  # Merk at jeg har endret til liten "s"
     elif valgtTall == "5":
-        folg()
+        passord()
     elif valgtTall == "6":
+        folg()
+    elif valgtTall == "7":
         bekreftelse = input("Er du sikker på at du vil avslutte? J/N ")
         if bekreftelse == "J" or bekreftelse == "j":  # sjekker for både stor og liten bokstav
             conn.close()
             exit()
     else:
-        nyttforsoek = input("Ugyldig valg. Velg et tall mellom 1-4: ")
+        nyttforsoek = input("Ugyldig valg. Velg et tall mellom 1-6: ")
         utfoerMenyvalg(nyttforsoek)
+
+def passord():
+    brukernavn = input("skriv inn bruker: ")
+    dittpass = input("skriv inn et passord: ")
+
+    nyPass = [brukernavn, dittpass]
+    telefonkatalog.append(nyPass)
+
+    pass_til_person_i_db(brukernavn, dittpass)
+
+    print("lagret pass for bruker {0}"
+          .format(brukernavn, dittpass))
+    input("Trykk en tast for å gå tilbake til menyen")
+    printMeny()
 
 def registrerPerson():
     fornavn = input("skriv inn fornavn: ")
