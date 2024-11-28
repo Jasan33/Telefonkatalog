@@ -2,7 +2,7 @@ import mysql.connector  # Importerer MySQL-connector
 import os
 import webbrowser
 from dotenv import load_dotenv, dotenv_values
-
+from getpass import getpass
 
 load_dotenv()
 
@@ -23,11 +23,12 @@ def legg_til_person_i_db(fornavn, etternavn, telefonnummer):
               (fornavn, etternavn, telefonnummer))
     conn.commit()
 
-def pass_til_person_i_db(brukernavn, dittpass):
-    cursor.execute(
-        "INSERT INTO passes (brukernavn, dittpass) VALUES (%s, TO_BASE64(AES_ENCRYPT(%s, 'key1234')))",
-        (brukernavn, dittpass),
-    )
+def pass_til_person_i_db(brukernavn, dittpass, recoverykey):
+    query = """
+        INSERT INTO passes (brukernavn, dittpass)
+        VALUES (%s, TO_BASE64(AES_ENCRYPT(%s, %s)))
+    """
+    cursor.execute(query, (brukernavn, dittpass, recoverykey))
     conn.commit()
 
 # Funksjon som sletter en person fra databasen basert på fornavn, etternavn og telefonnummer
@@ -75,16 +76,18 @@ def utfoerMenyvalg(valgtTall):
         utfoerMenyvalg(nyttforsoek)
 
 def passord():
-    brukernavn = input("skriv inn bruker: ")
-    dittpass = input("skriv inn et passord: ")
+    brukernavn = input("Skriv inn en brukenavn: ")
+    dittpass = getpass
+    dittpass = input("Skriv inn ditt passord: ")
+    recoverykey = input("Skriv inn et recover key: ")
 
     nyPass = [brukernavn, dittpass]
     telefonkatalog.append(nyPass)
 
-    pass_til_person_i_db(brukernavn, dittpass)
+    pass_til_person_i_db(brukernavn, dittpass, recoverykey)
 
-    print("lagret pass for bruker {0}"
-          .format(brukernavn, dittpass))
+    print("lagret passordet for bruker {0}. husk keyen din '{2}'"
+          .format(brukernavn, dittpass, recoverykey))
     input("Trykk en tast for å gå tilbake til menyen")
     printMeny()
 
