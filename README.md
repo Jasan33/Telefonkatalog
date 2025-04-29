@@ -1,6 +1,8 @@
 # Full installasjonsveiledning til telefonkatalogen
 ### instalisjon på rasptory pien
 1. For å srarte trenger du en ferdig bygget raspberry pi 3,4 eller 5. Følg denne youtube toturialen vis du ikke har en ferdig bygget raspberry pi (https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
+
+
 [![Watch the video](https://i.imgur.com/UpW8HHZ.png)](https://www.youtube.com/watch?v=S9CYlpbSz-c&ab_channel=InsideWire)
 
 2. vent til at instalasjonen er ferdig og svar på spørsmålene som dukker på skjermen
